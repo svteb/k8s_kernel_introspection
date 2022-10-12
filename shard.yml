@@ -1,0 +1,22 @@
+name: kernel_introspection
+version: 0.1.0
+
+authors:
+  - W. Watson <Watson@vulk.coop>
+  - Joshua Darius <Joshua.smith@vulk.coop>
+  - Denver Williams <denver@debian.nz>
+
+crystal: '>= 1.0.0'
+license: MIT
+
+targets:
+  kernel_introspection:
+    main: "src/kernel_introspection.cr"
+
+dependencies:
+  kubectl_client:
+    github: cnf-testsuite/kubectl_client
+    branch: main
+  cluster_tools:
+    github: cnf-testsuite/cluster_tools
+    branch: main
