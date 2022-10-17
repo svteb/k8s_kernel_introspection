@@ -24,7 +24,7 @@ describe "KernelInstrospection" do
 
     (statuses.find{|x| x["cmdline"].includes?("nginx: master process")} ).should_not be_nil
 
-    KubectlClient::Delete.command("pod/nginx", "kubectl_delete_nginx", force_output=true)
+    KubectlClient::Delete.command("pod/nginx")
   end
 
   it "'#find_first_process' should return all statuses for all containers in a pod", tags: ["kernel-introspection"]  do
@@ -34,7 +34,7 @@ describe "KernelInstrospection" do
       Log.info { "pod_info: #{pod_info}"}
       (pod_info).should_not be_nil
     ensure
-      KubectlClient::Delete.command("pod/nginx", "kubectl_delete_nginx", force_output=true)
+      KubectlClient::Delete.command("pod/nginx")
     end
   end
 
