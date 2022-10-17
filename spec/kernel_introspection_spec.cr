@@ -43,7 +43,7 @@ describe "KernelInstrospection" do
     result = KubectlClient::ShellCmd.run("kubectl run nginx --image=nginx --labels='name=nginx'", "kubectl_run_nginx", force_output=true)
     KubectlClient::Get.resource_wait_for_install("pod", "nginx")
     begin
-      pods_info = KernelIntrospection::K8s.find_matching_processes("nginx: worker")
+      pods_info = KernelIntrospection::K8s.find_matching_processes("nginx")
       Log.info { "pods_info: #{pods_info}"}
       (pods_info).size.should be > 0
     ensure
