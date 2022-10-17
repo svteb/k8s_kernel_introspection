@@ -31,6 +31,7 @@ describe "KernelInstrospection" do
     result = KubectlClient::ShellCmd.run("kubectl run nginx --image=nginx --labels='name=nginx'", "kubectl_run_nginx", force_output=true)
     KubectlClient::Get.resource_wait_for_install("pod", "nginx")
     begin
+      KubectlClient::ShellCmd.run("kubectl get pods", "kubectl_get_pods",force_output=true)
       pod_info = KernelIntrospection::K8s.find_first_process("nginx: master process")
       Log.info { "pod_info: #{pod_info}"}
       (pod_info).should_not be_nil
@@ -42,6 +43,7 @@ describe "KernelInstrospection" do
   it "'#find_matching_processes' should return all matching processes", tags: ["find_first_proc"]  do
     result = KubectlClient::ShellCmd.run("kubectl run nginx --image=nginx --labels='name=nginx'", "kubectl_run_nginx", force_output=true)
     KubectlClient::Get.resource_wait_for_install("pod", "nginx")
+    KubectlClient::ShellCmd.run("kubectl get pods", "kubectl_get_pods",force_output=true)
     begin
       pods_info = KernelIntrospection::K8s.find_matching_processes("nginx")
       Log.info { "pods_info: #{pods_info}"}
