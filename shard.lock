@@ -2,7 +2,7 @@ version: 2.0
 shards:
   cluster_tools:
     git: https://github.com/cnf-testsuite/cluster_tools.git
-    version: 0.1.0+git.commit.8f5bfebaa44ec2e011f83d13af721f4b61015f9a
+    version: 0.1.0+git.commit.9c2fda6a1106d1c1a67a733445fb2a339035e768
 
   docker_client:
     git: https://github.com/cnf-testsuite/docker_client.git
