@@ -45,7 +45,7 @@ describe "KernelInstrospection" do
     begin
       pods_info = KernelIntrospection::K8s.find_matching_processes("nginx: worker")
       Log.info { "pods_info: #{pods_info}"}
-      (pods_info).size.should_be > 0
+      (pods_info).size.should be > 0
     ensure
       KubectlClient::Delete.command("pod/nginx")
     end
