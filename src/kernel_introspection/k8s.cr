@@ -180,7 +180,7 @@ module KernelIntrospection
     end
 
     def self.find_matching_processes(process_name) : Array(MatchingProcessInfo)
-      Log.info { "find_first_process" }
+      Log.info { "find_matching_processes" }
       results = [] of MatchingProcessInfo
       nodes = KubectlClient::Get.schedulable_nodes_list
       nodes.map do |node|
