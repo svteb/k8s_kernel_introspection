@@ -5,6 +5,7 @@ require "file_utils"
 
 describe "KernelInstrospection" do
   before_all do
+    KubectlClient::Create.namespace("cnf-testsuite")
     ClusterTools.install
   end
 
