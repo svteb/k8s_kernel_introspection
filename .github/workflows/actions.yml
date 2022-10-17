@@ -23,4 +23,4 @@ jobs:
       - name: Run tests
         run: |
           shards install
-          crystal spec
+          LOG_LEVEL=info crystal spec
