@@ -29,6 +29,7 @@ describe "KernelInstrospection" do
 
   it "'#find_first_process' should return all statuses for all containers in a pod", tags: ["kernel-introspection"]  do
     result = KubectlClient::ShellCmd.run("kubectl run nginx --image=nginx --labels='name=nginx'", "kubectl_run_nginx", force_output=true)
+    KubectlClient::Get.resource_wait_for_install("pod", "nginx")
     begin
       pod_info = KernelIntrospection::K8s.find_first_process("nginx: master process")
       Log.info { "pod_info: #{pod_info}"}
