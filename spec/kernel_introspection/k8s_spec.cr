@@ -1,9 +1,9 @@
-require "./spec_helper"
+require "../spec_helper"
 require "kubectl_client"
-require "./../src/kernel_introspection.cr"
-require "file_utils"
+require "cluster_tools"
+require "../../src/kernel_introspection/k8s.cr"
 
-describe "KernelInstrospection" do
+describe "KernelIntrospection::K8s" do
   before_all do
     begin
       KubectlClient::Create.namespace("cnf-testsuite")

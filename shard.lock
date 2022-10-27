@@ -8,6 +8,10 @@ shards:
     git: https://github.com/cnf-testsuite/docker_client.git
     version: 0.1.0+git.commit.32dacefbc3dfcf98c8126ff793c97a3038e9b122
 
+  kernel_introspection:
+    git: https://github.com/cnf-testsuite/kernel_introspection.git
+    version: 0.1.0+git.commit.d2e6736092a9bd571c87cb82181dcd9b2380939f
+
   kubectl_client:
     git: https://github.com/cnf-testsuite/kubectl_client.git
     version: 0.1.0+git.commit.12cad24a372469e34e0f64019b10e1b3dc82a124

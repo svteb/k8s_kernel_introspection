@@ -1,7 +1,8 @@
-name: kernel_introspection
+name: k8s_kernel_introspection
 version: 0.1.0
 
 authors:
+  - William Harris <wharris@upscalews.com>
   - W. Watson <Watson@vulk.coop>
   - Joshua Darius <Joshua.smith@vulk.coop>
   - Denver Williams <denver@debian.nz>
@@ -10,10 +11,13 @@ crystal: '>= 1.0.0'
 license: MIT
 
 targets:
-  kernel_introspection:
-    main: "src/kernel_introspection.cr"
+  k8s_kernel_introspection:
+    main: "src/kernel_introspection/k8s.cr"
 
 dependencies:
+  kernel_introspection:
+    github: cnf-testsuite/kernel_introspection
+    branch: will/extract_k8s_code
   kubectl_client:
     github: cnf-testsuite/kubectl_client
     branch: main

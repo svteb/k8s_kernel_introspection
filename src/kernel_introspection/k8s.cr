@@ -1,5 +1,6 @@
-module KernelIntrospection
+require "kernel_introspection"
 
+module KernelIntrospection
   module K8s
     module Node
       def self.pids(node)
