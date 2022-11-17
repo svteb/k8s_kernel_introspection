@@ -17,7 +17,7 @@ targets:
 dependencies:
   kernel_introspection:
     github: cnf-testsuite/kernel_introspection
-    branch: will/extract_k8s_code
+    branch: main
   kubectl_client:
     github: cnf-testsuite/kubectl_client
     branch: main
