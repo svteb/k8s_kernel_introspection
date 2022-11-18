@@ -12,7 +12,7 @@ license: MIT
 
 targets:
   k8s_kernel_introspection:
-    main: "src/kernel_introspection/k8s.cr"
+    main: "k8s_kernel_introspection.cr"
 
 dependencies:
   kernel_introspection:
