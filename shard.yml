@@ -1,5 +1,5 @@
 name: k8s_kernel_introspection
-version: 0.1.0
+version: 1.0.0
 
 authors:
   - William Harris <wharris@upscalews.com>
@@ -17,11 +17,11 @@ targets:
 dependencies:
   kernel_introspection:
     github: cnf-testsuite/kernel_introspection
-    branch: main
+    version: ~> 0.1.0
   kubectl_client:
     github: cnf-testsuite/kubectl_client
-    branch: main
+    version: ~> 1.0.0
   cluster_tools:
     github: cnf-testsuite/cluster_tools
-    branch: main
+    version: ~> 1.0.0
 
