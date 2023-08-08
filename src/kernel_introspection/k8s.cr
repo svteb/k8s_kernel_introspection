@@ -179,7 +179,7 @@ module KernelIntrospection
                 "process status and cmdline",
                 pid: pid,
                 cmdline: process[:output],
-                status: status,
+                status: "#{status}",
               ))
               if process[:output] =~ /#{process_name}/
                 ret = {node: node, pod: pod, container_status: container_status, status: status[:output], pid: pid.to_s, cmdline: process[:output]}
@@ -219,7 +219,7 @@ module KernelIntrospection
               Log.for("find_matching_processes").debug(&.emit(
                 cat_cmdline_cmd: cat_cmdline_cmd,
                 process: process[:output],
-                status: status
+                status: "#{status}"
               ))
               if process[:output] =~ /#{process_name}/
                 result = {node: node, pod: pod, container_status: container_status, status: status[:output], pid: pid.to_s, cmdline: process[:output]}
