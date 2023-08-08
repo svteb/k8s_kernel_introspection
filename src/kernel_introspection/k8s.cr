@@ -9,7 +9,6 @@ module KernelIntrospection
         Log.info { "pids ls_proc: #{ls_proc}" }
         parsed_ls = KernelIntrospection.parse_ls(ls_proc[:output])
         pids = KernelIntrospection.pids_from_ls_proc(parsed_ls)
-        Log.info { "pids pids: #{pids}" }
         pids
       end
 
@@ -64,42 +63,54 @@ module KernelIntrospection
       end
 
       def self.proctree_by_pid(potential_parent_pid : String, node : JSON::Any, proc_statuses : (Array(String) | Nil)  = nil) : Array(Hash(String, String)) # array of status hashes
-        Log.info { "proctree_by_node potential_parent_pid: #{potential_parent_pid}" }
+        Log.for("proctree_by_pid").info { "proctree_by_pid potential_parent_pid: #{potential_parent_pid}" }
         proctree = [] of Hash(String, String)
         potential_parent_status : Hash(String, String) | Nil = nil
         unless proc_statuses
           pids = pids(node) 
-          Log.info { "proctree_by_pid pids: #{pids}" }
+          Log.for("proctree_by_pid").debug { "pids: #{pids}" }
           proc_statuses = all_statuses_by_pids(pids, node)
         end
-        Log.debug { "proctree_by_pid proc_statuses: #{proc_statuses}" }
+        Log.for("proctree_by_pid").debug { "proc_statuses: #{proc_statuses}" }
         proc_statuses.each do |proc_status|
           parsed_status = KernelIntrospection.parse_status(proc_status)
-          Log.debug { "proctree_by_pid parsed_status: #{parsed_status}" }
+          Log.for("proctree_by_pid").debug { "parsed_status: #{parsed_status}" }
           if parsed_status
             ppid = parsed_status["PPid"].strip 
             current_pid = parsed_status["Pid"].strip
-            Log.info { "potential_parent_pid, ppid, current_pid #{potential_parent_pid}, #{ppid}, #{current_pid}" }
+            Log.for("proctree_by_pid").debug(&.emit(
+              potential_parent_pid: potential_parent_pid,
+              ppid: ppid,
+              current_pid: current_pid
+            ))
             # save potential parent pid
             if current_pid == potential_parent_pid
-              Log.info { "current_pid == potential_parent_pid" }
               cmdline = cmdline_by_pid(current_pid, node)[:output]
-              Log.info { "cmdline: #{cmdline}" }
+              Log.for("proctree_by_pid").debug(&.emit(
+                "current_pid == potential_parent_pid",
+                current_pid: current_pid,
+                cmdline: cmdline
+              ))
               potential_parent_status = parsed_status.merge({"cmdline" => cmdline}) 
-              proctree << potential_parent_status 
-            # Add descendeds of the parent pid
+              proctree << potential_parent_status
+            # Add descendants of the parent pid
             elsif ppid == potential_parent_pid && ppid != current_pid
-              Log.info { "ppid == potential_parent_pid" }
-              Log.info { "proctree_by_pid ppid == pid && ppid != current_pid: pid, ppid,
-                       current_pid #{potential_parent_pid}, #{ppid}, #{current_pid}" }
+              Log.for("proctree_by_pid").debug(&.emit(
+                "proctree_by_pid ppid == pid && ppid != current_pid",
+                potential_parent_pid: potential_parent_pid,
+                ppid: ppid,
+                current_pid: current_pid
+              ))
               cmdline = cmdline_by_pid(current_pid, node)[:output]
-              Log.info { " the matched descendent is cmdline: #{cmdline}" }
+              Log.for("proctree_by_pid").debug(&.emit("Matched descendent cmdline", cmdline: cmdline))
               proctree = proctree + proctree_by_pid(current_pid, node, proc_statuses)
             end
           end
         end
-        Log.info { "proctree_by_node final proctree: #{proctree}" }
-        proctree.each{|x| Log.info { "Process name: #{x["Name"]}, pid: #{x["Pid"]}, ppid: #{x["PPid"]}" } }
+        Log.for("proctree_by_pid").debug { "proctree: #{proctree}" }
+        proctree.each do |x|
+          Log.for("proctree_by_pid").debug(&.emit(process_name: x["Name"], pid: x["Pid"], ppid: x["PPid"]))
+        end
         proctree
       end
     end
@@ -163,12 +174,16 @@ module KernelIntrospection
               # there are some nodes that wont have a proc with this pid in it
               # e.g. a stand alone pod gets installed on only one node
               process = ClusterTools.exec_by_node("cat /proc/#{pid}/cmdline", node)
-              Log.info {"cat /proc/#{pid}/cmdline process: #{process[:output]}" }
               status = ClusterTools.exec_by_node("cat /proc/#{pid}/status", node)
-              Log.info {"status: #{status}" }
+              Log.for("find_first_process").debug(&.emit(
+                "process status and cmdline",
+                pid: pid,
+                cmdline: process[:output],
+                status: status,
+              ))
               if process[:output] =~ /#{process_name}/
                 ret = {node: node, pod: pod, container_status: container_status, status: status[:output], pid: pid.to_s, cmdline: process[:output]}
-                Log.info { "status found: #{ret}" }
+                Log.for("find_first_process").info { "status found: #{ret}" }
                 break 
               end
             end
@@ -199,9 +214,13 @@ module KernelIntrospection
               # there are some nodes that wont have a proc with this pid in it
               # e.g. a stand alone pod gets installed on only one node
               process = ClusterTools.exec_by_node("cat /proc/#{pid}/cmdline", node)
-              Log.info {"cat /proc/#{pid}/cmdline process: #{process[:output]}" }
-              status = ClusterTools.exec_by_node("cat /proc/#{pid}/status", node)
-              Log.info {"status: #{status}" }
+              cat_cmdline_cmd = "cat /proc/#{pid}/status"
+              status = ClusterTools.exec_by_node(cat_cmdline_cmd, node)
+              Log.for("find_matching_processes").debug(&.emit(
+                cat_cmdline_cmd: cat_cmdline_cmd,
+                process: process[:output],
+                status: status
+              ))
               if process[:output] =~ /#{process_name}/
                 result = {node: node, pod: pod, container_status: container_status, status: status[:output], pid: pid.to_s, cmdline: process[:output]}
                 results.push(result)
