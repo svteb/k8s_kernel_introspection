@@ -218,7 +218,7 @@ module KernelIntrospection
               status = ClusterTools.exec_by_node(cat_cmdline_cmd, node)
               Log.for("find_matching_processes").debug(&.emit(
                 cat_cmdline_cmd: cat_cmdline_cmd,
-                process: process[:output],
+                process: "#{process[:output]}",
                 status: "#{status}"
               ))
               if process[:output] =~ /#{process_name}/
