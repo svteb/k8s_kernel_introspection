@@ -1,5 +1,5 @@
 name: k8s_kernel_introspection
-version: 1.0.1
+version: 1.0.2
 
 authors:
   - William Harris <wharris@upscalews.com>
