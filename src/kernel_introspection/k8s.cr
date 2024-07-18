@@ -12,6 +12,18 @@ module KernelIntrospection
         pids
       end
 
+      def self.pids_by_container(container_id, node)
+        # Searches /proc for processes - /proc/<pid>,
+	# each process is checked for having #{container_id} in the cgroup file,
+	# matching processes are returned as pids.
+        command = "/bin/sh -c \"find /proc -maxdepth 1 -regex '/proc/[0-9]+' -exec grep -l '#{container_id}' {}/cgroup \\; 2>/dev/null | sed -e 's,/proc/\\([0-9]*\\)/cgroup,\\1,'\""
+        result = ClusterTools.exec_by_node(command, node)
+        output = result["output"].strip
+
+        pids = output.split("\n")
+        pids
+      end
+
       def self.all_statuses_by_pids(pids : Array(String), node) : Array(String)
         Log.info { "all_statuses_by_pids" }
         proc_statuses = pids.map do |pid|
