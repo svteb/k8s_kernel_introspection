@@ -12,6 +12,21 @@ module KernelIntrospection
         pids
       end
 
+      def self.pids_by_container(container_id, node)
+        # Command explanation:
+        # 1. Get all process directories in /proc with find.
+        # 2. Exec grep <container_id> for every returned process cgroup file, 
+        # redirect any errors (in case some temporary process disappears/find cannot access a directory)
+        # 3. Grep returns paths with desired cgroup in format /proc/<pid>/cgroup, this output gets trimmed
+        # by sed to only return a list of <pid>s
+        command = "/bin/sh -c \"find /proc -maxdepth 1 -regex '/proc/[0-9]+' -exec grep -l '#{container_id}' {}/cgroup \\; 2>/dev/null | sed -e 's,/proc/\\([0-9]*\\)/cgroup,\\1,'\""
+        result = ClusterTools.exec_by_node(command, node)
+        output = result["output"].strip
+
+        pids = output.split("\n")
+        pids
+      end
+
       def self.all_statuses_by_pids(pids : Array(String), node) : Array(String)
         Log.info { "all_statuses_by_pids" }
         proc_statuses = pids.map do |pid|
